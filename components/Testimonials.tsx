@@ -27,11 +27,14 @@ export default function Testimonials() {
       const { ScrollTrigger } = st;
       gsap.registerPlugin(ScrollTrigger);
 
-      gsap.fromTo(sectionRef.current?.querySelector("h2"),
-        { opacity:0, y:50 },
-        { opacity:1, y:0, duration:1, ease:"expo.out",
-          scrollTrigger:{ trigger:sectionRef.current, start:"top 80%" } }
-      );
+      const h2 = sectionRef.current?.querySelector("h2");
+      if (h2) {
+        gsap.fromTo(h2,
+          { opacity:0, y:50 },
+          { opacity:1, y:0, duration:1, ease:"expo.out",
+            scrollTrigger:{ trigger:sectionRef.current, start:"top 80%" } }
+        );
+      }
 
       gsap.fromTo(sectionRef.current?.querySelectorAll(".testi-card") ?? [],
         { opacity:0, y:70, rotateX:15 },
