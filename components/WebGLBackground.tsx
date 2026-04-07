@@ -13,7 +13,7 @@ export default function WebGLBackground() {
     let renderer: any, scene: any, camera: any, particles: any, geometry: any;
 
     const init = async () => {
-      const THREE = (await import("three")).default || await import("three");
+      const THREE = await import("three");
 
       renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: false });
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
