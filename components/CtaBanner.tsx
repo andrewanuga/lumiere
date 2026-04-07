@@ -14,13 +14,16 @@ export default function CtaBanner() {
       gsap.registerPlugin(ScrollTrigger);
 
       // Scale-up entrance
-      gsap.fromTo(sectionRef.current?.querySelector(".cta-inner"),
-        { opacity:0, scale:.94 },
-        {
-          opacity:1, scale:1, duration:1.2, ease:"expo.out",
-          scrollTrigger:{ trigger:sectionRef.current, start:"top 75%" },
-        }
-      );
+      const ctaInner = sectionRef.current?.querySelector(".cta-inner");
+      if (ctaInner) {
+        gsap.fromTo(ctaInner,
+          { opacity:0, scale:.94 },
+          {
+            opacity:1, scale:1, duration:1.2, ease:"expo.out",
+            scrollTrigger:{ trigger:sectionRef.current, start:"top 75%" },
+          }
+        );
+      }
 
       // Title chars
       const h2 = sectionRef.current?.querySelector("h2");
@@ -82,14 +85,14 @@ export default function CtaBanner() {
           Start the Conversation
         </p>
 
-        <h2 style={{
+        <div style={{
           fontFamily:"var(--font-serif)",
           fontSize:"clamp(48px,7vw,96px)",fontWeight:300,
           lineHeight:.95,letterSpacing:"-.04em",
           maxWidth:780,margin:"0 auto 40px",
         }}>
           Ready to create something <em style={{color:"var(--gold)"}}>lasting?</em>
-        </h2>
+        </div>
 
         <p style={{
           fontSize:15,lineHeight:1.85,color:"var(--muted)",
