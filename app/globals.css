@@ -1,26 +1,286 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg: #06060a;
+  --bg2: #0b0b10;
+  --bg3: #0e0e15;
+  --surface: #12121a;
+  --border: rgba(255, 255, 255, 0.06);
+  --border2: rgba(255, 255, 255, 0.13);
+  --text: #f0ece0;
+  --muted: rgba(240, 236, 224, 0.42);
+  --faint: rgba(240, 236, 224, 0.1);
+  --gold: #c9a76a;
+  --gold2: rgba(201, 167, 106, 0.14);
+  --gold3: rgba(201, 167, 106, 0.06);
+  --gold-bright: #e0c080;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+html { font-size: 16px; }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-display), system-ui, sans-serif;
+  font-weight: 400;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  cursor: none;
+}
+
+/* ── GRAIN ── */
+body::after {
+  content: '';
+  position: fixed; inset: 0; z-index: 9000; pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+  opacity: 0.028;
+}
+
+/* ── FONTS ── */
+.font-serif { font-family: var(--font-serif), Georgia, serif; }
+.font-mono  { font-family: var(--font-mono), monospace; }
+.font-display { font-family: var(--font-display), system-ui, sans-serif; }
+
+/* ── WEBGL CANVAS ── */
+#webgl-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* ── SPLIT TEXT ANIMATION ── */
+.char {
+  display: inline-block;
+  transform-origin: bottom center;
+}
+
+/* ── REVEAL CLASSES (toggled by GSAP) ── */
+.reveal-up   { opacity: 0; transform: translateY(60px); }
+.reveal-left { opacity: 0; transform: translateX(-60px); }
+.reveal-scale{ opacity: 0; transform: scale(0.88); }
+.reveal-rot  { opacity: 0; transform: rotateY(25deg) translateX(40px); }
+
+/* ── 3D CARD ── */
+.card-3d-wrap {
+  perspective: 1000px;
+  transform-style: preserve-3d;
+}
+.card-3d {
+  transform-style: preserve-3d;
+  transition: transform 0.08s linear;
+  will-change: transform;
+}
+
+/* ── IMAGE PARALLAX WRAPPER ── */
+.parallax-img {
+  overflow: hidden;
+  position: relative;
+}
+.parallax-img img {
+  transform: scale(1.18);
+  transform-origin: center center;
+  will-change: transform;
+  transition: none;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ── MARQUEE ── */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.animate-marquee { animation: marquee 28s linear infinite; }
+
+/* ── SCROLL BAR FILL ── */
+@keyframes scrollFill {
+  0%   { left: -100%; }
+  60%, 100% { left: 100%; }
+}
+.scroll-fill {
+  position: absolute; top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: var(--gold);
+  animation: scrollFill 2.5s ease-in-out infinite;
+}
+
+/* ── GOLD LINE SWEEP (hover) ── */
+.line-sweep::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0;
+  width: 0; height: 1px;
+  background: var(--gold);
+  transition: width 0.5s ease;
+}
+.line-sweep:hover::after { width: 100%; }
+
+/* ── TEXT GRADIENT ── */
+.text-gradient {
+  background: linear-gradient(135deg, var(--gold-bright) 0%, var(--gold) 50%, #a07830 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── GLOW ── */
+.glow-gold {
+  box-shadow: 0 0 60px rgba(201, 167, 106, 0.15), 0 0 120px rgba(201, 167, 106, 0.06);
+}
+
+/* ── PROGRESS BAR ── */
+#progress-bar {
+  position: fixed;
+  top: 0; left: 0;
+  height: 1px;
+  background: linear-gradient(90deg, var(--gold), var(--gold-bright));
+  z-index: 9999;
+  transform-origin: left;
+  transform: scaleX(0);
+}
+
+/* ── GALLERY HOVER ── */
+.gallery-item {
+  position: relative;
+  overflow: hidden;
+  cursor: none;
+}
+.gallery-item .img-wrap {
+  width: 100%; height: 100%;
+  transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: transform;
+}
+.gallery-item:hover .img-wrap { transform: scale(1.08); }
+.gallery-item .overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(6,6,10,0.9) 0%, rgba(6,6,10,0.1) 55%, transparent 100%);
+  opacity: 0;
+  transition: opacity 0.4s;
+  display: flex; flex-direction: column; justify-content: flex-end;
+  padding: 28px;
+}
+.gallery-item:hover .overlay { opacity: 1; }
+
+/* ── TYPEWRITER ── */
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+.cursor-blink { animation: blink 1s step-end infinite; }
+
+/* ── FLOATING ELEMENTS ── */
+@keyframes float1 {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33%       { transform: translateY(-12px) rotate(1deg); }
+  66%       { transform: translateY(-6px) rotate(-0.5deg); }
+}
+@keyframes float2 {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50%       { transform: translateY(-18px) rotate(-1.5deg); }
+}
+.float-1 { animation: float1 7s ease-in-out infinite; }
+.float-2 { animation: float2 9s ease-in-out infinite; }
+
+/* ── HORIZONTAL SCROLL SECTION ── */
+.h-scroll-track {
+  display: flex;
+  gap: 24px;
+  width: max-content;
+}
+
+/* ── SERVICES ITEM ── */
+.svc-item {
+  position: relative;
+  overflow: hidden;
+}
+.svc-item::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: var(--gold3);
+  transform: translateX(-101%);
+  transition: transform 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.svc-item:hover::before { transform: translateX(0); }
+
+/* ── NUMBER COUNTER ── */
+.counter-num {
+  font-family: var(--font-serif);
+  font-size: clamp(48px, 7vw, 90px);
+  font-weight: 300;
+  line-height: 1;
+  color: var(--text);
+  letter-spacing: -0.04em;
+}
+
+/* ── PROCESS LINE ── */
+.process-line {
+  position: absolute;
+  top: 28px; left: 0; right: 0;
+  height: 1px;
+  background: var(--border2);
+  z-index: 0;
+}
+.process-line-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--gold), var(--gold-bright));
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+/* ── BUTTON STYLES ── */
+.btn-gold {
+  font-family: var(--font-mono);
+  font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--bg); background: var(--gold);
+  border: none; padding: 16px 36px;
+  cursor: none; text-decoration: none; display: inline-block;
+  position: relative; overflow: hidden;
+  transition: transform 0.2s;
+}
+.btn-gold::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: rgba(255,255,255,0.15);
+  transform: translateX(-101%) skewX(-15deg);
+  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.btn-gold:hover::after { transform: translateX(101%) skewX(-15deg); }
+.btn-gold:hover { transform: translateY(-2px); }
+
+.btn-outline {
+  font-family: var(--font-mono);
+  font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--muted); background: transparent;
+  border: 1px solid var(--border2); padding: 16px 36px;
+  cursor: none; text-decoration: none; display: inline-block;
+  transition: color 0.3s, border-color 0.3s, transform 0.2s;
+}
+.btn-outline:hover { color: var(--text); border-color: var(--gold); transform: translateY(-2px); }
+
+/* ── TESTIMONIAL CARD ── */
+.testi-card {
+  border: 1px solid var(--border);
+  position: relative; overflow: hidden;
+  padding: 44px 40px;
+  transition: border-color 0.35s, transform 0.35s;
+  cursor: none;
+  background: var(--bg2);
+}
+.testi-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0;
+  width: 3px; height: 0;
+  background: var(--gold);
+  transition: height 0.4s ease;
+}
+.testi-card:hover::before { height: 100%; }
+.testi-card:hover { border-color: rgba(201,167,106,0.3); transform: translateY(-6px); }
+
+/* ── MOBILE ── */
+@media (max-width: 768px) {
+  nav { padding: 20px 24px !important; }
+  section { padding-left: 24px !important; padding-right: 24px !important; }
+  .hero-headline { font-size: clamp(52px, 14vw, 80px) !important; }
+  .hide-mobile { display: none !important; }
 }
