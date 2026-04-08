@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
-import { Cormorant, Syne, Geist_Mono } from "next/font/google";
+import { Cormorant_Garamond, Syne, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Cursor from "@/components/Cursor";
 
-const cormorant = Cormorant({
+// Note: Cormorant is usually imported as Cormorant_Garamond for the full set
+const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
   variable: "--font-serif",
   weight: ["300", "400", "500"],
@@ -27,13 +28,18 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Lumière — Photography Studio",
-  description: "Visual narratives crafted with precision. Portraits, weddings, editorial, and commercial work that holds long after the shutter closes.",
+  description: "Visual narratives crafted with precision.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${cormorant.variable} ${syne.variable} ${geistMono.variable}`}>
-      <body>
+    <html 
+      lang="en" 
+      className={`${cormorant.variable} ${syne.variable} ${geistMono.variable}`}
+      style={{ scrollBehavior: 'smooth' }}
+    >
+      {/* Apply a base font class to the body so text isn't blank before CSS loads */}
+      <body className={`${syne.className} antialiased`}>
         <Cursor />
         {children}
       </body>
